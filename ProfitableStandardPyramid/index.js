@@ -1,29 +1,54 @@
-import { initializeApp } from 'firebase/app';
-import { config } from 'dotenv';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getDatabase } from 'firebase/database';
-import { getAnalytics } from 'firebase/analytics';
-k
+import express from 'express';
+import dotenv from 'dotenv';
+import pkg from 'pg';
 
-const firebaseApp initializeApp({
-  apiKey: "AIzaSyCk1c7S1-SRayX5x402qRt6Kmv1eXTkhJI",
-  authDomain: "alpha-note-274ac.firebaseapp.com",
-  projectId: "alpha-note-274ac",
-  storageBucket: "alpha-note-274ac.appspot.com",
-  messagingSenderId: "683733177535",
-  appId: "1:683733177535:web: 3a3312c51ab980863ce20a",
-  measurementId: "G-TV6C3016HT"
+// Configuração para carregar variáveis de ambiente (como DATABASE_URL)
+dotenv.config();
+
+// Configuração do PostgreSQL
+const { Pool } = pkg;
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    // Necessário para conexões seguras com o Render Postgres
+    rejectUnauthorized: false
+  }
 });
 
-const app = initializeApp(firebaseConfig);
-export const db = getDatabase(app);
-export const auth = getAuth(app);
+// Inicialização do Servidor Express
+const app = express();
+app.use(express.json());
 
+// ROTA 1: Status Básico do Serviço
+app.get('/', (req, res) => {
+  res.status(200).send('Serviço Web 'fluxo mental' online e pronto!');
+});
 
-auth.onAuthStateChanged(user => {
-  if (user) {
-    console.log('Você entrou! Prepare seu chá ou seu café:', user);
-  } else {
-    console.log('Nenhum usuário logado');
+// ROTA 2: Teste de Conexão com o Banco de Dados
+app.get('/db-status', async (req, res) => {
+  try {
+    const client = await pool.connect();
+    // Consulta simples para provar que a conexão funciona
+    const result = await client.query('SELECT NOW()');
+    client.release();
+    res.status(200).json({
+      status: 'Conexão com o PostgreSQL OK',
+      hora_atual_db: result.rows[0].now
+    });
+  } catch (err) {
+    console.error('ERRO AO CONECTAR AO BANCO DE DADOS:', err);
+    res.status(500).json({
+      status: 'ERRO: Falha na conexão com o Banco de Dados. Verifique a DATABASE_URL.',
+      detalhe: err.message
+    });
   }
-})
+});
+
+// Definição da Porta
+// É crucial usar process.env.PORT, que é a porta fornecida pelo Render
+const PORT = process.env.PORT || 3000;
+
+// Inicia o Servidor
+app.listen(PORT, () => {
+  console.log(Servidor Express iniciado e ouvindo na porta ${PORT});
+});
