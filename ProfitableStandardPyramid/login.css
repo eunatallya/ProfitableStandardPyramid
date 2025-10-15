@@ -1,0 +1,125 @@
+/* Reset e estilos básicos */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f0eddb;
+  font-family: 'Montserrat', sans-serif;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+}
+
+/* Container principal */
+.container {
+  position: relative;
+  width: 420px;
+  color: #000000;
+  border-color: #000000;
+  background-color: #ffffff;
+  border-radius: 15px;
+  padding: 50px 40px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+
+/* Caixa de formulário (login ou registro) */
+.form-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  text-align: center;
+  transition: 0.4s;
+}
+
+.form-box.hidden {
+  display: none;
+}
+
+/* Container interno do registro */
+.form-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+
+/* Campos de registro: paciente e profissional */
+#camposPaciente:not(.hidden),
+#camposProfissional:not(.hidden) {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+/* Todos os inputs e selects dentro do container */
+.container input,
+.container select {
+  width: 100%;          /* garante ocupar toda a largura do container pai */
+  padding: 15px;        /* espaço interno maior */
+  font-size: 16px;      /* texto maior e legível */
+  height: 50px;         /* altura consistente */
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  color: #000000;
+  outline: none;
+}
+
+/* Estilo dos selects */
+select {
+  cursor: pointer;
+}
+
+/* Botões principais (login / registrar) */
+.main-btn {
+  background-color: #2f5aa8;
+  border: none;
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+  margin-top: 10px;
+  width: 100%; /* garante largura igual aos inputs */
+}
+
+.main-btn:hover {
+  background-color: #006666;
+}
+
+/* Títulos h2 */
+h2 {
+  margin: 0;
+}
+
+/* Links de troca de formulário */
+span {
+  color: #2f5aa8;
+  cursor: pointer;
+}
+
+span:hover {
+  text-decoration: underline;
+}
+
+/* Mensagens de erro */
+.error {
+  color: #ff6b6b;
+  font-size: 14px;
+}
+
+/* Classes utilitárias */
+.hidden {
+  display: none;
+}

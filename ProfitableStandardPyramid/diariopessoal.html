@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MindFlow</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link id="tema-css" rel="stylesheet" href="claro.css">
+  <script src="scripts.js" defer></script>
+</head>
+<body>
+  <!-- Início do Widget VLibras -->
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
+  </div>
+
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    new window.VLibras.Widget('https://vlibras.gov.br/app');
+  </script>
+  <!-- Fim do Widget VLibras -->
+  <div class="container">
+    <!-- MENU LATERAL -->
+    <nav class="menu-lateral">
+      <h2>
+        <a href="paginaPaciente.html">
+          <img id="logo" src="mindflow_logo_transparente.png" alt="MindFlow" />
+        </a>
+      </h2>
+      <ul>
+        <li><a href="sos.html">S.O.S.</a></li>
+        <li><a href="calendario.html">Calendário</a></li>
+        <li><a href="diariopessoal.html">Diário Pessoal</a></li>
+      </ul>
+      <button id="logoutBtn">Sair da Conta</button>
+      <button id="botao-tema" class="botao-tema" title="Alternar Tema">🌙 Modo Escuro</button>
+    </nav>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <div class="layout">
+      <main class="conteudo">
+        <div class="container2">
+          <h1>Seu Espaço Pessoal</h1>
+          <input type="text" id="titulo" placeholder="Título da entrada">
+          <textarea id="texto" placeholder="Escreva aqui..." rows="4"></textarea>
+          <select id="humor">
+            <option value="😀">😀 Feliz</option>
+            <option value="😢">😢 Triste</option>
+            <option value="😡">😡 Irritado</option>
+            <option value="😴">😴 Cansado</option>
+            <option value="🤔">🤔 Pensativo</option>
+          </select>
+          <button onclick="salvarEntrada()">Salvar</button>
+        </div>
+
+        <hr>
+        <div id="entries-container"></div>
+
+        <!-- Popup -->
+        <div id="popup" class="popup hidden">
+          <div class="popup-content">
+            <h2 id="popup-title"></h2>
+            <p id="popup-date"></p>
+            <p id="popup-text"></p>
+            <div class="popup-actions">
+              <button onclick="closePopup()">Fechar</button>
+              <button onclick="editEntry()">Editar</button>
+              <button onclick="deleteEntry()">Excluir</button>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+</body>
+</html>
