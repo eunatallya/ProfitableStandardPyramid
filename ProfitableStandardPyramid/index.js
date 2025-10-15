@@ -21,7 +21,7 @@ app.use(express.json());
 
 // ROTA 1: Status Básico do Serviço
 app.get('/', (req, res) => {
-  res.status(200).send('Serviço Web 'fluxo mental' online e pronto!');
+  res.status(200).send("Serviço Web 'fluxo mental' online e pronto!");
 });
 
 // ROTA 2: Teste de Conexão com o Banco de Dados
