@@ -7,9 +7,10 @@ dotenv.config();
 const { Pool } = pkg;
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
+  ssl: process.env.DATABASE_URL ? {
     rejectUnauthorized: false
   }
+  : false
 });
 
 const app = express();
