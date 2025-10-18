@@ -22,6 +22,12 @@ const pool = new Pool({
 const app = express();
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+// -------------------------------------------------
+
+// Suas outras rotas (como a de status do DB) continuam funcionando
 app.get("/db-status", async (req, res) => {
   try {
     const client = await pool.connect();
