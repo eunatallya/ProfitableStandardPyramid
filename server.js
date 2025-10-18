@@ -16,8 +16,7 @@ app.use(express.static(__dirname));
 const API_KEY = process.env.GEMINI_API_KEY;
 if (!API_KEY) console.warn("⚠️ AVISO: GEMINI_API_KEY não configurada.");
 
-const GEMINI_URL =
-  `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${API_KEY}`;
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${API_KEY}`;
 
 // Função auxiliar para chamar a API Gemini
 async function chamarGemini(mensagem) {
@@ -32,9 +31,9 @@ Usuário: ${mensagem}`;
       contents: [{ role: "user", parts: [{ text: prompt }] }],
       generationConfig: {
         maxOutputTokens: 256,
-        temperature: 0.7
-      }
-    })
+        temperature: 0.7,
+      },
+    }),
   });
 
   if (!resposta.ok) {
@@ -43,7 +42,9 @@ Usuário: ${mensagem}`;
   }
 
   const data = await resposta.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || "⚠️ A IA não respondeu.";
+  return (
+    data.candidates?.[0]?.content?.parts?.[0]?.text || "⚠️ A IA não respondeu."
+  );
 }
 
 // Rota do chat
@@ -66,14 +67,11 @@ app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
 });
 
-
-
-
-require('dotenv').config();
-const express = require('express');
-const nodemailer = require('nodemailer');
-const rateLimit = require('express-rate-limit');
-const { isEmail } = require('validator');
+require("dotenv").config();
+const express = require("express");
+const nodemailer = require("nodemailer");
+const rateLimit = require("express-rate-limit");
+const { isEmail } = require("validator");
 
 const app = express();
 app.use(express.json());
@@ -82,35 +80,38 @@ const limiter = rateLimit({
   windowMs: 60 * 1000, // 1 minuto
   max: 10,
 });
-app.use('/api/', limiter);
+app.use("/api/", limiter);
 
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  host: process.env.SMTP_HOST || "smtp.gmail.com",
   port: Number(process.env.SMTP_PORT || 465),
-  secure: process.env.SMTP_SECURE === 'true',
+  secure: process.env.SMTP_SECURE === "true",
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
 });
 
-transporter.verify().then(() => {
-  console.log('SMTP conectado com sucesso');
-}).catch(err => {
-  console.error('Erro na conexão SMTP:', err.message);
-});
+transporter
+  .verify()
+  .then(() => {
+    console.log("SMTP conectado com sucesso");
+  })
+  .catch((err) => {
+    console.error("Erro na conexão SMTP:", err.message);
+  });
 
-app.post('/api/register', async (req, res) => {
+app.post("/api/register", async (req, res) => {
   try {
     const { email } = req.body;
     if (!email || !isEmail(email)) {
-      return res.status(400).json({ error: 'E-mail inválido' });
+      return res.status(400).json({ error: "E-mail inválido" });
     }
 
     const mailOptions = {
       from: `"Equipe ParapimPim" <${process.env.SMTP_USER}>`,
       to: email,
-      subject: 'Registro confirmado — ParapimPim',
+      subject: "Registro confirmado — ParapimPim",
       text: `Olá!\n\nSeu e-mail ${email} foi registrado com sucesso no site ParapimPim.\n\nSe não foi você, ignore este e-mail.\n\nAbraços,\nEquipe ParapimPim`,
       html: `<p>Olá!</p>
              <p>Seu e-mail <strong>${email}</strong> foi registrado com sucesso no site <strong>ParapimPim</strong>.</p>
@@ -120,10 +121,10 @@ app.post('/api/register', async (req, res) => {
 
     await transporter.sendMail(mailOptions);
 
-    return res.json({ ok: true, message: 'E-mail de boas-vindas enviado' });
+    return res.json({ ok: true, message: "E-mail de boas-vindas enviado" });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: 'Erro interno ao enviar e-mail' });
+    return res.status(500).json({ error: "Erro interno ao enviar e-mail" });
   }
 });
 
