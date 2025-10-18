@@ -10,7 +10,6 @@ const pool = new Pool({
   ssl: {
     rejectUnauthorized: false
   }
-  : false
 });
 
 const app = express();
