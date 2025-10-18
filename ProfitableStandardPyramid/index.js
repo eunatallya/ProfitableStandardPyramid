@@ -22,16 +22,6 @@ const pool = new Pool({
 const app = express();
 app.use(express.json());
 
-// --- 4. MUDANÇA PRINCIPAL: Rota raiz ("/") ---
-// Em vez de enviar uma mensagem, envia o arquivo 'index.html'
-app.get("/", (req, res) => {
-  // path.join() junta o caminho do diretório atual (__dirname)
-  // com o nome do arquivo (index.html)
-  res.sendFile(path.join(__dirname, "index.html"));
-});
-// -------------------------------------------------
-
-// Suas outras rotas (como a de status do DB) continuam funcionando
 app.get("/db-status", async (req, res) => {
   try {
     const client = await pool.connect();
