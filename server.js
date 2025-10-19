@@ -1,21 +1,28 @@
-import express from "express";
-import fetch from "node-fetch";
-import cors from "cors";
-import path from "path";
-import { fileURLToPath } from "url";
+// ==========================================================
+//  SERVIDOR UNIFICADO (E-MAIL + CHATBOT GEMINI)
+// ==========================================================
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// --- Importações (CommonJS) ---
+require("dotenv").config();
+const express = require("express");
+const fetch = require("node-fetch"); // Usando node-fetch@2 (compatível com require)
+const cors = require("cors");
+const nodemailer = require("nodemailer");
+const rateLimit = require("express-rate-limit");
+const { isEmail } = require("validator");
+const path = require("path");
 
+// --- Configuração Principal do App ---
 const app = express();
-app.use(cors());
-app.use(express.json());
-app.use(express.static(__dirname));
+app.use(cors()); // Habilita o CORS para todas as rotas
+app.use(express.json()); // Habilita o parsing de JSON
+app.use(express.static(__dirname)); // Serve arquivos estáticos (como seu sos.html)
 
-// 🔑 Configure sua chave Gemini nos Secrets do Replit
+// ==========================================================
+//  CONFIGURAÇÃO DO CHATBOT GEMINI
+// ==========================================================
 const API_KEY = process.env.GEMINI_API_KEY;
 if (!API_KEY) console.warn("⚠️ AVISO: GEMINI_API_KEY não configurada.");
-
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${API_KEY}`;
 
 // Função auxiliar para chamar a API Gemini
@@ -47,40 +54,14 @@ Usuário: ${mensagem}`;
   );
 }
 
-// Rota do chat
-app.post("/chat", async (req, res) => {
-  const { message } = req.body;
-  if (!message) return res.status(400).json({ error: "Mensagem vazia" });
-
-  try {
-    const respostaIA = await chamarGemini(message);
-    res.json({ reply: respostaIA });
-  } catch (err) {
-    console.error("Erro no /chat:", err);
-    res.status(500).json({ error: "Erro no servidor: " + err.message });
-  }
-});
-
-// Inicializa o servidor
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
-});
-
-require("dotenv").config();
-const express = require("express");
-const nodemailer = require("nodemailer");
-const rateLimit = require("express-rate-limit");
-const { isEmail } = require("validator");
-
-const app = express();
-app.use(express.json());
-
+// ==========================================================
+//  CONFIGURAÇÃO DO SERVIÇO DE E-MAIL (NODEMAILER)
+// ==========================================================
 const limiter = rateLimit({
   windowMs: 60 * 1000, // 1 minuto
   max: 10,
 });
-app.use("/api/", limiter);
+app.use("/api/", limiter); // Aplica o limitador de requisições apenas a rotas /api/
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || "smtp.gmail.com",
@@ -101,6 +82,25 @@ transporter
     console.error("Erro na conexão SMTP:", err.message);
   });
 
+// ==========================================================
+//  ROTAS DA APLICAÇÃO
+// ==========================================================
+
+// --- Rota do Chat ---
+app.post("/chat", async (req, res) => {
+  const { message } = req.body;
+  if (!message) return res.status(400).json({ error: "Mensagem vazia" });
+
+  try {
+    const respostaIA = await chamarGemini(message);
+    res.json({ reply: respostaIA });
+  } catch (err) {
+    console.error("Erro no /chat:", err);
+    res.status(500).json({ error: "Erro no servidor: " + err.message });
+  }
+});
+
+// --- Rota de Registro de E-mail ---
 app.post("/api/register", async (req, res) => {
   try {
     const { email } = req.body;
@@ -114,21 +114,24 @@ app.post("/api/register", async (req, res) => {
       subject: "Registro confirmado — ParapimPim",
       text: `Olá!\n\nSeu e-mail ${email} foi registrado com sucesso no site ParapimPim.\n\nSe não foi você, ignore este e-mail.\n\nAbraços,\nEquipe ParapimPim`,
       html: `<p>Olá!</p>
-             <p>Seu e-mail <strong>${email}</strong> foi registrado com sucesso no site <strong>ParapimPim</strong>.</p>
-             <p>Se não foi você, ignore este e-mail.</p>
-             <p>Abraços,<br/>Equipe ParapimPim</p>`,
+               <p>Seu e-mail <strong>${email}</strong> foi registrado com sucesso no site <strong>ParapimPim</strong>.</p>
+               <p>Se não foi você, ignore este e-mail.</p>
+               <p>Abraços,<br/>Equipe ParapimPim</p>`,
     };
 
     await transporter.sendMail(mailOptions);
-
     return res.json({ ok: true, message: "E-mail de boas-vindas enviado" });
+
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Erro interno ao enviar e-mail" });
   }
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Servidor rodando em http://localhost:${port}`);
+// ==========================================================
+//  INICIALIZAÇÃO DO SERVIDOR (APENAS UMA VEZ)
+// ==========================================================
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor UNIFICADO rodando em http://localhost:${PORT}`);
 });

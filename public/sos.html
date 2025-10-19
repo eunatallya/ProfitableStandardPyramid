@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOS - MindFlow</title>
+
+  <!-- Tema -->
+  <link id="tema-css" rel="stylesheet" href="claro.css">
+  <script src="scripts.js" defer></script>
+
+  <style>
+    /* ====== ESTILO DO CHAT SOS ====== */
+    .sos-chat-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      background: #f7faff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-top: 20px;
+    }
+
+    .sos-chat-container p {
+      font-size: 1.1rem;
+      color: #333;
+    }
+
+    .sos-btn {
+      background: #ff4c4c;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .sos-btn:hover {
+      background: #e13e3e;
+    }
+
+    /* ====== JANELA DE CHAT ====== */
+    .sos-chat-window {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 360px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 999;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .sos-chat-header {
+      background: #ff4c4c;
+      color: white;
+      padding: 12px;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sos-chat-body {
+      background: #f9f9f9;
+      padding: 12px;
+      height: 320px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sos-user-msg {
+      align-self: flex-end;
+      background: #cfe9ff;
+      padding: 10px;
+      border-radius: 10px 10px 0 10px;
+      max-width: 75%;
+      font-size: 0.95rem;
+    }
+
+    .sos-ai-msg {
+      align-self: flex-start;
+      background: #eee;
+      padding: 10px;
+      border-radius: 10px 10px 10px 0;
+      max-width: 75%;
+      font-size: 0.95rem;
+    }
+
+    .sos-chat-input {
+      display: flex;
+      border-top: 1px solid #ccc;
+    }
+
+    .sos-chat-input input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+    }
+
+    .sos-chat-input button {
+      background: #ff4c4c;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .sos-chat-input button:hover {
+      background: #e13e3e;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ===== VLibras ===== -->
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
+  </div>
+
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script> new window.VLibras.Widget('https://vlibras.gov.br/app'); </script>
+
+  <!-- ===== CONTEÚDO PRINCIPAL ===== -->
+  <div class="container">
+    <nav class="menu-lateral">
+      <h2><a href="paginaPaciente.html">
+        <img id="logo" src="mindflow_logo_transparente.png" alt="MindFlow" /></a>
+      </h2>
+      <ul>
+        <li><a href="sos.html" class="active">S.O.S.</a></li>
+        <li><a href="calendario.html">Calendário</a></li>
+        <li><a href="diariopessoal.html">Diário Pessoal</a></li>
+      </ul>
+      <button id="logoutBtn">Sair da Conta</button>
+      <button id="botao-tema" class="botao-tema" title="Alternar Tema">🌙 Modo Escuro</button>
+    </nav>
+
+    <div class="container3">
+      <h2>SOS Ajuda</h2>
+
+      <!-- Mapa -->
+      <div id="map"></div>
+
+      <!-- Conteúdo -->
+      <div class="sos-chat-container">
+        <p>Precisa conversar agora? Clique abaixo para iniciar um chat seguro com nossa IA de apoio emocional ❤️</p>
+        <button class="sos-btn" id="abrirChat">🧠 Iniciar Chat SOS</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== JANELA DE CHAT SOS ===== -->
+  <div class="sos-chat-window hidden" id="chatSos">
+    <div class="sos-chat-header">
+      <span>Assistente SOS MindFlow</span>
+      <button id="fecharChat" style="background:none;border:none;color:white;font-size:1.2rem;">✖</button>
+    </div>
+
+    <div class="sos-chat-body" id="chatBody">
+      <div class="sos-ai-msg">Olá, eu sou o assistente SOS da MindFlow. 💬<br>Como você está se sentindo hoje?</div>
+    </div>
+
+    <div class="sos-chat-input">
+      <input type="text" id="msgInput" placeholder="Digite sua mensagem..." />
+      <button id="enviarMsg">Enviar</button>
+    </div>
+  </div>
+
+  <!-- ===== MAPA GOOGLE ===== -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDtLsAAkOkoOWGXNPSyjnvhtFJol8m9DiE"></script>
+ 
+
+  <script>
+    const abrirChat = document.getElementById("abrirChat");
+    const fecharChat = document.getElementById("fecharChat");
+    const chatSos = document.getElementById("chatSos");
+    const chatBody = document.getElementById("chatBody");
+    const msgInput = document.getElementById("msgInput");
+    const enviarMsg = document.getElementById("enviarMsg");
+
+   
+    abrirChat.addEventListener("click", () => chatSos.classList.remove("hidden"));
+    fecharChat.addEventListener("click", () => chatSos.classList.add("hidden"));
+
+    async function enviarMensagem() {
+      const texto = msgInput.value.trim();
+      if (!texto) return;
+
+      chatBody.innerHTML += `<div class='sos-user-msg'>${texto}</div>`;
+      msgInput.value = "";
+      chatBody.scrollTop = chatBody.scrollHeight;
+
+      try {
+          const res = await fetch('/chat', {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: texto })
+        });
+
+        if (!res.ok) {
+          const txt = await res.text();
+          throw new Error(`Erro: ${res.status} → ${txt}`);
+        }
+
+        const data = await res.json();
+        const reply = data.reply || "⚠️ A IA não respondeu.";
+        chatBody.innerHTML += `<div class='sos-ai-msg'>${reply}</div>`;
+        chatBody.scrollTop = chatBody.scrollHeight;
+
+      } catch (err) {
+        console.error("Erro no chat:", err);
+        // A linha abaixo foi ajustada para exibir o erro real no chat, o que ajuda na depuração
+        chatBody.innerHTML += `<div class='sos-ai-msg'>❌ Erro: ${err.message}</div>`; 
+      }
+    }
+
+    enviarMsg.addEventListener("click", enviarMensagem);
+    msgInput.addEventListener("keypress", e => {
+      if (e.key === "Enter") enviarMensagem();
+    });
+  </script>
+
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-col">
+        <h3>Contatos de Emergência</h3>
+        <p>CVV: 188 (24h)</p>
+        <p>SAMU: 192</p>
+        <p>Bombeiros: 193</p>
+      </div>
+      <div class="footer-col">
+        <h3>Recursos</h3>
+        <a href="#">Central de Ajuda</a><br>
+        <a href="#">Termos de Uso</a><br>
+        <a href="#">Política de Privacidade</a>
+      </div>
+      <div class="footer-col">
+        <h3>MindFlow</h3>
+        <p>Plataforma dedicada ao cuidado e acompanhamento da saúde mental.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 MindFlow. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+</body>
+</html>
