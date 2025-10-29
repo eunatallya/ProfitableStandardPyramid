@@ -16,7 +16,8 @@ const path = require("path");
 const app = express();
 app.use(cors()); // Habilita o CORS para todas as rotas
 app.use(express.json()); // Habilita o parsing de JSON
-app.use(express.static(__dirname)); // Serve arquivos estáticos (como seu sos.html)
+app.use(express.static(path.join(__dirname, 'public'))); // Serve arquivos estáticos (como seu sos.html)
+
 
 // ==========================================================
 //  CONFIGURAÇÃO DO CHATBOT GEMINI

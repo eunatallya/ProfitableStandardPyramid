@@ -42,6 +42,7 @@
         <div id="camposProfissional" class="hidden">
           <input type="text" id="nomeProf" placeholder="Nome" />
           <input type="text" id="sobrenomeProf" placeholder="Sobrenome" />
+          <input type="password" id="regSenha" placeholder="Senha" />
           <input type="text" id="crmProf" placeholder="CRM (ex: 123456/SP)" />
           <input type="email" id="emailProf" placeholder="Email" />
         </div>
@@ -152,7 +153,7 @@
         window.location.href = "paginaPaciente.html"; // já existe
       } else if (user.tipo === "profissional") {
         alert(`Bem-vindo(a) profissional ${user.username}!`);
-        window.location.href = "paginaProfissional.html"; // crie essa página se ainda não existir
+        window.location.href = "profissional.html"; // crie essa página se ainda não existir
       }
     } else {
       loginError.textContent = "Usuário ou senha incorretos!";
