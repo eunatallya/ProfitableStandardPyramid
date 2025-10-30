@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Início - Profissional - MindFlow</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    
+    <link id="tema-css" rel="stylesheet" href="claro.css"> 
+    
+    <script src="scripts.js" defer></script> 
+    
+    <style>
+        body, html { height: 100%; }
+        .container { display: flex; height: 100%; }
+        .container3 {
+            padding: 20px;
+            flex-grow: 1;
+            overflow-y: auto;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+        .container3 h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--cor-texto-principal);
+        }
+        .dashboard-box {
+            margin-top: 20px;
+            background: var(--cor-fundo-secundario, #fff);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--cor-borda, #eee);
+        }
+        .dashboard-box h2 { margin-top: 0; }
+        .dashboard-box p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div vw class="enabled"><div vw-access-button class="active"></div><div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div></div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script> new window.VLibras.Widget('https://vlibras.gov.br/app'); </script>
+
+    <div class="container">
+        
+        <nav class="menu-lateral">
+            <h2><a href="profissional.html">
+                <img id="logo" src="mindflow_logo_transparente.png" alt="MindFlow" /></a>
+            </h2>
+            
+            <ul>
+                <li><a href="profissional.html" class="active">🏠 Início</a></li>
+                
+                <li><a href="prontuarios.html">📋 Meus Pacientes</a></li>
+                <li><a href="agenda.html">📅 Agenda</a></li>
+            </ul>
+            
+            <button id="logoutBtn">Sair da Conta</button>
+            <button id="botao-tema" class="botao-tema" title="Alternar Tema">🌙 Modo Escuro</button>
+        </nav>
+
+        <div class="container3">
+            <h1>Página do Profissional</h1>
+
+<div class="dashboard-box">
+                <h2>Olá! Seja muito bem-vindo(a) à sua área profissional.</h2>
+                <p>Criamos este espaço para que você possa gerenciar facilmente os dados que aparecem em seu perfil. As informações que você preencher aqui são fundamentais, pois elas serão vistas por nossos usuários que estão ativamente à procura de apoio e ajuda. Sinta-se à vontade para atualizar seu perfil sempre que necessário.</p>
+            </div>
+            
+            </div> </div> <script>
+        // Script de logout (mantido)
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) {
+            logoutBtn.addEventListener("click", () => {
+                sessionStorage.removeItem("currentUser");
+                alert("Você saiu da conta.");
+                window.location.href = "index.html";
+            });
+        }
+    </script>
+</body>
+</html>
