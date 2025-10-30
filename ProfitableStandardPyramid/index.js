@@ -40,21 +40,21 @@ app.get('/db-status', async (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  app.get('/add-password-hash', async (req, res) => {
+aplicativo.pegar('/adicionar-senha-hash', async (req, res) => {
     try {
-        const client = await pool.connect();
+        const cliente = await piscina.connect();
         
         const sql = `
             ALTER TABLE profissionais 
-            ADD COLUMN password_hash VARCHAR(255);
+            ADD COLUMN senha_hash VARCHAR(255);
         `;
 
-        await client.query(sql);
-        client.release();
+        await cliente.query(sql);
+        cliente.release();
         
-        res.status(200).json({ status: "OK", message: "Column 'password_hash' added successfully. REMOVE THIS ROUTE IMMEDIATELY!" });
-    } catch (error) {
-        res.status(500).json({ status: "ERROR", detail: error.message });
+        res.status(200).json({ status: "OK", mensagem: "Coluna 'senha_hash' adicionada com sucesso. REMOVA ESTA ROTA IMEDIATAMENTE!" });
+    } catch (erro) {
+        res.status(500).json({ status: "ERRO", detalhe: erro.message });
     }
 });
   console.log('Servidor Express iniciado e ouvindo na porta ${PORT}');
