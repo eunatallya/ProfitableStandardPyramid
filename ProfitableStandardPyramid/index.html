@@ -39,6 +39,23 @@
         </div>
 
         <!-- Campos Profissional -->
+        aplicativo.get('/adicionar-senha-hash', async (req, res) => {
+    try {
+        const cliente = await piscina.connect();
+        
+        const sql = `
+            ALTER TABLE profissionais 
+            ADD COLUMN senha_hash VARCHAR(255);
+        `;
+
+        await cliente.query(sql);
+        cliente.release();
+        
+        res.status(200).json({ status: "OK", mensagem: "Coluna 'senha_hash' adicionada com sucesso. REMOVA ESTA ROTA IMEDIATAMENTE!" });
+    } catch (erro) {
+        res.status(500).json({ status: "ERRO", detalhe: erro.message });
+    }
+});
         <div id="camposProfissional" class="hidden">
           <input type="text" id="nomeProf" placeholder="Nome" />
           <input type="text" id="sobrenomeProf" placeholder="Sobrenome" />
