@@ -39,7 +39,6 @@ app.get('/db-status', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
 aplicativo.pegar('/adicionar-senha-hash', async (req, res) => {
     try {
         const cliente = await piscina.connect();
@@ -57,5 +56,7 @@ aplicativo.pegar('/adicionar-senha-hash', async (req, res) => {
         res.status(500).json({ status: "ERRO", detalhe: erro.message });
     }
 });
+app.listen(PORT, () => {
+
   console.log('Servidor Express iniciado e ouvindo na porta ${PORT}');
 });
