@@ -40,5 +40,22 @@ app.get('/db-status', async (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
+  app.get('/add-password-hash', async (req, res) => {
+    try {
+        const client = await pool.connect();
+        
+        const sql = `
+            ALTER TABLE profissionais 
+            ADD COLUMN password_hash VARCHAR(255);
+        `;
+
+        await client.query(sql);
+        client.release();
+        
+        res.status(200).json({ status: "OK", message: "Column 'password_hash' added successfully. REMOVE THIS ROUTE IMMEDIATELY!" });
+    } catch (error) {
+        res.status(500).json({ status: "ERROR", detail: error.message });
+    }
+});
   console.log('Servidor Express iniciado e ouvindo na porta ${PORT}');
 });
