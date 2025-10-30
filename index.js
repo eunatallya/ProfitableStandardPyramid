@@ -1,5 +1,5 @@
 // ==========================================================
-//  SERVIDOR MEGA-UNIFICADO (BD + CHAT + LOGIN + E-MAIL)
+//  SERVIDOR MEGA-UNIFICADO (BD + CHAT + LOGIN + E-MAIL)
 // ==========================================================
 
 // --- Importações ---
@@ -10,9 +10,13 @@ import fetch from "node-fetch";
 import cors from "cors";
 import nodemailer from "nodemailer";
 import rateLimit from "express-rate-limit";
-import bcrypt from "bcrypt"; // Para criptografia de senha
+import bcrypt from "bcrypt";
 import path from "path";
 import { fileURLToPath } from "url";
+
+// --- IMPORTAÇÕES ADICIONADAS PARA O CHAT ---
+import http from 'http';
+import { Server } from 'socket.io';
 
 // --- Configuração do Ambiente ---
 dotenv.config();
@@ -24,29 +28,35 @@ const __dirname = path.dirname(__filename);
 
 // --- Configuração Principal do App ---
 const app = express();
-app.use(cors()); // Habilita o CORS
-app.use(express.json()); // Habilita o parsing de JSON
+app.use(cors());
+app.use(express.json());
+
+// --- CRIAÇÃO DO SERVIDOR HTTP E SOCKET.IO ---
+// O Socket.IO precisa ser "anexado" a um servidor http, que usa o 'app' do express
+const server = http.createServer(app);
+const io = new Server(server);
 
 // --- Servir Arquivos Estáticos da pasta 'public' ---
-// Esta é a linha correta. Ela serve TODOS os arquivos.
+// (Mantido o seu original, que serve a pasta 'public')
 app.use(express.static(path.join(__dirname, "public")));
 
-// --- Bloco de Content-Security-Policy (CORREÇÃO DO ERRO DO FAVICON) ---
+// --- Bloco de Content-Security-Policy ---
 app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
     "default-src 'self' https://vlibras.gov.br https://fonts.googleapis.com https://fonts.gstatic.com; " +
-    "script-src 'self' https://vlibras.gov.br 'unsafe-inline'; " +
+    "script-src 'self' https://vlibras.gov.br 'unsafe-inline' http://localhost:3000; " + // Adicionado localhost para socket.io
     "style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; " +
     "font-src 'self' https://fonts.gstatic.com; " +
-    "img-src 'self' data:;"
+    "img-src 'self' data:;" +
+    "connect-src 'self' ws://localhost:3000;" // Permite a conexão WebSocket
   );
   next();
 });
 // ----------------------------------------
 
 // ==========================================================
-//  CONFIGURAÇÃO DO BANCO DE DADOS (PostgreSQL)
+//  CONFIGURAÇÃO DO BANCO DE DADOS (PostgreSQL)
 // ==========================================================
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -56,7 +66,7 @@ const pool = new Pool({
 });
 
 // ==========================================================
-//  CONFIGURAÇÃO DO CHATBOT GEMINI
+//  CONFIGURAÇÃO DO CHATBOT GEMINI
 // ==========================================================
 const API_KEY = process.env.GEMINI_API_KEY;
 if (!API_KEY) console.warn("⚠️ AVISO: GEMINI_API_KEY não configurada.");
@@ -81,7 +91,7 @@ async function chamarGemini(mensagem) {
 }
 
 // ==========================================================
-//  CONFIGURAÇÃO DO SERVIÇO DE E-MAIL (NODEMAILER)
+//  CONFIGURAÇÃO DO SERVIÇO DE E-MAIL (NODEMAILER)
 // ==========================================================
 const limiter = rateLimit({
   windowMs: 60 * 1000,
@@ -99,13 +109,8 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// (Comentado para evitar o erro 'Connection closed' até você configurar o SMTP)
-// transporter.verify()
-//   .then(() => console.log("SMTP conectado com sucesso"))
-//   .catch((err) => console.error("Erro na conexão SMTP:", err.message));
-
 // ==========================================================
-//  ROTAS DA APLICAÇÃO
+//  ROTAS DA APLICAÇÃO (API)
 // ==========================================================
 
 // --- Rota de Status do BD ---
@@ -180,7 +185,7 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-// --- Rota do Chat ---
+// --- Rota do Chat (Gemini) ---
 app.post("/chat", async (req, res) => {
   const { message } = req.body;
   if (!message) return res.status(400).json({ error: "Mensagem vazia" });
@@ -193,11 +198,6 @@ app.post("/chat", async (req, res) => {
     res.status(500).json({ error: "Erro no servidor: " + err.message });
   }
 });
-
-// ==========================================================
-//  INICIALIZAÇÃO DO SERVIDOR
-// ==========================================================
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`🚀 Servidor MEGA-UNIFICADO rodando em http://localhost:${PORT}`);
 });

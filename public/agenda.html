@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agenda - MindFlow</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link id="tema-css" rel="stylesheet" href="claro.css">
+    
+    <script src="scripts.js" defer></script>
+    <script src="agenda.js" defer></script> 
+    
+    <style>
+        /* (Seus estilos anteriores ... ) */
+        body, html { height: 100%; }
+        .container { display: flex; height: 100%; }
+        .container3 { padding: 20px; flex-grow: 1; /* ... */ }
+        .container3 h1 { font-size: 1.8rem; /* ... */ }
+        .dashboard-box { margin-top: 20px; /* ... */ }
+        .agenda-layout { display: flex; /* ... */ }
+        .input-section { flex: 1; /* ... */ }
+        .agenda-input { width: 100%; /* ... */ }
+        .input-section textarea { width: 100%; min-height: 150px; /* ... */ }
+        .btn-salvar { width: 100%; /* ... */ }
+        .log-section { flex: 2; /* ... */ }
+        #agenda-log-container { list-style: none; /* ... */ }
+
+        /* Estilo do item de log */
+        .log-item {
+            background: var(--cor-fundo-secundario, #fff);
+            border-bottom: 1px solid var(--cor-borda, #ddd);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .log-date {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: var(--cor-primaria, #007bff);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .log-content {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: var(--cor-texto-principal, #333);
+        }
+        
+        .empty-message { /* ... */ }
+        
+        /* === ESTILOS NOVOS PARA OS BOTÕES === */
+        
+        .log-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            border-top: 1px solid var(--cor-borda, #eee);
+            padding-top: 10px;
+        }
+
+        .log-actions button {
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+        .log-actions button:hover {
+            opacity: 0.8;
+        }
+
+        .btn-edit {
+            background: #ffc107; /* Amarelo */
+            color: black;
+        }
+        
+        .btn-delete {
+            background: #dc3545; /* Vermelho */
+            color: white;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <nav class="menu-lateral">
+            <h2><a href="profissional.html"><img id="logo" src="mindflow_logo_transparente.png" alt="MindFlow" /></a></h2>
+            <ul>
+                <li><a href="profissional.html">🏠 Início</a></li>
+                <li><a href="prontuarios.html">📋 Meus Pacientes</a></li>
+                <li><a href="agenda.html" class="active">📅 Agenda</a></li>
+            </ul>
+            <button id="logoutBtn">Sair da Conta</button>
+            <button id="botao-tema" class="botao-tema" title="Alternar Tema">🌙 Modo Escuro</button>
+        </nav>
+
+        <div class="container3">
+            <h1>Agenda</h1>
+            <div class="agenda-layout">
+                <div class="input-section">
+                    <h2>Nova Entrada na Agenda</h2>
+                    <label for="agenda-date">Selecione o dia:</label>
+                    <input type="date" id="agenda-date" class="agenda-input">
+                    <label for="agenda-input-text">Anotação (consulta, evento, etc.):</label>
+                    <textarea id="agenda-input-text" rows="6" placeholder="Ex: 14:00 - Consulta com Paciente X..."></textarea>
+                    <button id="btn-salvar-entrada" class="btn-salvar">Salvar Entrada</button>
+                </div>
+                <div class="log-section">
+                    <h2>Registros do Dia Selecionado</h2>
+                    <ul id="agenda-log-container">
+                        </ul>
+                </div>
+            </div>
+        </div> 
+    </div> 
+    
+    <script>
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) {
+            logoutBtn.addEventListener("click", () => {
+                sessionStorage.removeItem("currentUser");
+                alert("Você saiu da conta.");
+                window.location.href = "index.html";
+            });
+        }
+    </script>
+</body>
+</html>
