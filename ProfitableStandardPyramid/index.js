@@ -45,7 +45,7 @@ aplicativo.pegar('/adicionar-senha-hash', async (req, res) => {
         const cliente = await piscina.connect();
         
         const sql = `
-            ALTER TABLE usuarios
+            ALTER TABLE profissional.html
             ADD COLUMN senha_hash VARCHAR(255);
         `;
 
