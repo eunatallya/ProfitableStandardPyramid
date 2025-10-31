@@ -41,7 +41,7 @@ const PORT = process.env.PORT || 3000;
 
 app.get('/adicionar-senha-hash', async (req, res) => {
     try {
-        const cliente = await piscina.connect();
+        const cliente = await pool.connect();
         
         const sql = `
             ALTER TABLE profissional
