@@ -44,6 +44,9 @@ app.get('/adicionar-senha-hash', async (req, res) => {
         const client = await pool.connect(); 
       
   const sql = `
+    CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY
+    );
+    
     ALTER TABLE users ADD COLUMN nome VARCHAR(100);
     ALTER TABLE users ADD COLUMN sobrenome VARCHAR(100);
     ALTER TABLE users ADD COLUMN idade INT;
