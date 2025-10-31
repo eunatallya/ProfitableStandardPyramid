@@ -42,9 +42,7 @@ const PORT = process.env.PORT || 3000;
 app.get('/adicionar-senha-hash', async (req, res) => {
     try {
         const client = await pool.connect(); 
-        
-        const sql = `
-       const sql = `
+      
   const sql = `
     ALTER TABLE users ADD COLUMN nome VARCHAR(100);
     ALTER TABLE users ADD COLUMN sobrenome VARCHAR(100);
