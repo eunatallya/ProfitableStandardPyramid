@@ -41,19 +41,19 @@ const PORT = process.env.PORT || 3000;
 
 app.get('/adicionar-senha-hash', async (req, res) => {
     try {
-        const cliente = await pool.connect();
+        const client = await pool.connect(); 
         
         const sql = `
-            ALTER TABLE profissional
+            ALTER TABLE "profissional" 
             ADD COLUMN senha_hash VARCHAR(255);
         `;
 
-        await cliente.query(sql);
-        cliente.release();
+        await client.query(sql);
+        client.release();
         
-        res.status(200).json({ status: "OK", mensagem: "Coluna 'senha_hash' adicionada com sucesso. REMOVA ESTA ROTA IMEDIATAMENTE!" });
-    } catch (erro) {
-        res.status(500).json({ status: "ERRO", detalhe: erro.message });
+        res.status(200).json({ status: "OK", message: "Column 'senha_hash' adicionada com sucesso. REMOVA ESTA ROTA IMEDIATAMENTE!" });
+    } catch (error) {
+        res.status(500).json({ status: "ERRO", detail: error.message });
     }
 });
 app.listen(PORT, () => {
