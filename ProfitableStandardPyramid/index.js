@@ -46,14 +46,13 @@ app.get('/adicionar-senha-hash', async (req, res) => {
         const sql = `
        const sql = `
   const sql = `
-    ALTER TABLE users ADD COLUMN IF NOT EXISTS nome VARCHAR(100);
-    ALTER TABLE users ADD COLUMN IF NOT EXISTS sobrenome VARCHAR(100);
-    ALTER TABLE users ADD COLUMN IF NOT EXISTS idade INT;
-    ALTER TABLE users ADD COLUMN IF NOT EXISTS sexo VARCHAR(50);
-    ALTER TABLE users ADD COLUMN IF NOT EXISTS area_atuacao VARCHAR(255);
-    ALTER TABLE users ADD COLUMN IF NOT EXISTS contato VARCHAR(255);
-    ALTER TABLE users ADD COLUMN IF NOT EXISTS sobre_mim TEXT;
-    
+  ALTER TABLE users ADD COLUMN nome VARCHAR(100);
+ALTER TABLE users ADD COLUMN sobrenome VARCHAR(100);
+ALTER TABLE users ADD COLUMN idade INT;
+ALTER TABLE users ADD COLUMN sexo VARCHAR(50);
+ALTER TABLE users ADD COLUMN area_atuacao VARCHAR(255);
+ALTER TABLE users ADD COLUMN contato VARCHAR(255);
+ALTER TABLE users ADD COLUMN sobre_mim TEXT;
     ALTER TABLE profissional ADD COLUMN IF NOT EXISTS senha_hash VARCHAR(255);
 `;
 
