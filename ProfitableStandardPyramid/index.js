@@ -39,7 +39,7 @@ app.get('/db-status', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
-aplicativo.pegar('/adicionar-senha-hash', async (req, res) => {
+app.get('/adicionar-senha-hash', async (req, res) => {
     try {
         const cliente = await piscina.connect();
         
