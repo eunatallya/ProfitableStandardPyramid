@@ -44,6 +44,13 @@ app.get('/adicionar-senha-hash', async (req, res) => {
         const client = await pool.connect(); 
         
         const sql = `
+        ALTER TABLE users ADD COLUMN nome VARCHAR(100);
+ALTER TABLE users ADD COLUMN sobrenome VARCHAR(100);
+ALTER TABLE users ADD COLUMN idade INT;
+ALTER TABLE users ADD COLUMN sexo VARCHAR(50);
+ALTER TABLE users ADD COLUMN area_atuacao VARCHAR(255);
+ALTER TABLE users ADD COLUMN contato VARCHAR(255);
+ALTER TABLE users ADD COLUMN sobre_mim TEXT;
             ALTER TABLE "profissional" 
             ADD COLUMN senha_hash VARCHAR(255);
         `;
