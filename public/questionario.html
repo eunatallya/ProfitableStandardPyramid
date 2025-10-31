@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindFlow - Questionário Rápido</title>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+        :root {
+            --cor-primaria: #007bff;
+            --cor-fundo: #f4f7f6;
+            --cor-cartao: #ffffff;
+            --cor-texto: #333;
+            --cor-label: #555;
+            --cor-borda: #ddd;
+            --sombra-cartao: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: var(--cor-cartao);
+            border-radius: 12px;
+            box-shadow: var(--sombra-cartao);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 600px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: var(--cor-primaria);
+            font-weight: 600;
+            margin-top: 0;
+            text-align: center;
+        }
+
+        p {
+            text-align: center;
+            color: var(--cor-label);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .pergunta {
+            margin-bottom: 1.75rem;
+        }
+
+        .pergunta label {
+            display: block;
+            font-weight: 500;
+            color: var(--cor-label);
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .pergunta select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            background-color: #fff;
+            appearance: none; /* Remove a seta padrão */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23555' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 16px;
+        }
+
+        .pergunta select:focus {
+            outline: none;
+            border-color: var(--cor-primaria);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            background-color: var(--cor-primaria);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        button[type="submit"]:active {
+            transform: scale(0.99);
+        }
+
+        button[type="submit"]:disabled {
+            background-color: #a0a0a0;
+            cursor: not-allowed;
+        }
+
+    </style>
+    </head>
+<body>
+    <div class="container">
+        <h1>Avaliação Rápida</h1>
+        <p>Responda algumas perguntas para entendermos como se sente.</p>
+        
+        <form id="questionarioForm">
+            <div class="pergunta">
+                <label for="q1">Nas últimas duas semanas, com que frequência você se sentiu para baixo, deprimido ou sem esperança?</label>
+                <select id="q1" required>
+                    <option value="0">Nenhuma vez</option>
+                    <option value="1">Vários dias</option>
+                    <option value="2">Mais da metade dos dias</option>
+                    <option value="3">Quase todos os dias</option>
+                </select>
+            </div>
+            
+            <div class="pergunta">
+                <label for="q2">Com que frequência você sentiu pouco interesse ou prazer em fazer as coisas?</label>
+                <select id="q2" required>
+                    <option value="0">Nenhuma vez</option>
+                    <option value="1">Vários dias</option>
+                    <option value="2">Mais da metade dos dias</option>
+                    <option value="3">Quase todos os dias</option>
+                </select>
+            </div>
+
+            <div class="pergunta">
+                <label for="q3">Com que frequência você se sentiu nervoso, ansioso ou no limite?</label>
+                <select id="q3" required>
+                    <option value="0">Nenhuma vez</option>
+                    <option value="1">Vários dias</option>
+                    <option value="2">Mais da metade dos dias</option>
+                    <option value="3">Quase todos os dias</option>
+                </select>
+            </div>
+
+            <div class="pergunta">
+                <label for="q4">Com que frequência você não foi capaz de parar ou controlar as preocupações?</label>
+                <select id="q4" required>
+                    <option value="0">Nenhuma vez</option>
+                    <option value="1">Vários dias</option>
+                    <option value="2">Mais da metade dos dias</option>
+                    <option value="3">Quase todos os dias</option>
+                </select>
+            </div>
+
+            <div class="pergunta">
+                <label for="q5">Com que frequência você teve dificuldade para relaxar?</label>
+                <select id="q5" required>
+                    <option value="0">Nenhuma vez</option>
+                    <option value="1">Vários dias</option>
+                    <option value="2">Mais da metade dos dias</option>
+                    <option value="3">Quase todos os dias</option>
+                </select>
+            </div>
+
+            <button type="submit">Finalizar e Entrar</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('questionarioForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // 1. Pega os dados do usuário
+            const userDataString = sessionStorage.getItem('userData');
+            if (!userDataString) {
+                alert('Erro: você não está logado. Redirecionando para o login.');
+                window.location.href = '/index.html'; 
+                return;
+            }
+            const userData = JSON.parse(userDataString);
+            const userId = userData.id;
+
+            // 2. Pega o TEXTO de TODAS as 5 respostas
+            const q1Select = document.getElementById('q1');
+            const q2Select = document.getElementById('q2');
+            const q3Select = document.getElementById('q3');
+            const q4Select = document.getElementById('q4');
+            const q5Select = document.getElementById('q5');
+            
+            const q1_texto = q1Select.options[q1Select.selectedIndex].text;
+            const q2_texto = q2Select.options[q2Select.selectedIndex].text;
+            const q3_texto = q3Select.options[q3Select.selectedIndex].text;
+            const q4_texto = q4Select.options[q4Select.selectedIndex].text;
+            const q5_texto = q5Select.options[q5Select.selectedIndex].text;
+
+            // 3. Monta o 'body' para o fetch com as 5 respostas
+            const bodyData = {
+                userId: userId,
+                respostas: {
+                    q1_texto: q1_texto,
+                    q2_texto: q2_texto,
+                    q3_texto: q3_texto,
+                    q4_texto: q4_texto,
+                    q5_texto: q5_texto
+                }
+            };
+            
+            const botao = e.target.querySelector('button');
+            try {
+                botao.disabled = true;
+                botao.textContent = 'Analisando...';
+                
+                const response = await fetch('/api/questionario', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(bodyData)
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json(); 
+                    throw new Error(errData.error);
+                }
+
+                // 4. Sucesso! Redireciona para a página principal
+                alert('Obrigado por responder!');
+                window.location.href = '/paginaPaciente.html'; // Mude se o nome for outro
+
+            } catch (err) {
+                alert('Erro ao salvar questionário: ' + err.message);
+                botao.disabled = false;
+                botao.textContent = 'Finalizar e Entrar';
+            }
+        });
+    </script>
+</body>
+</html>

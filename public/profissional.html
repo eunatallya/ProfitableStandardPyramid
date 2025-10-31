@@ -12,6 +12,7 @@
     <script src="scripts.js" defer></script> 
     
     <style>
+        /* (Seu CSS original...) */
         body, html { height: 100%; }
         .container { display: flex; height: 100%; }
         .container3 {
@@ -39,6 +40,25 @@
             font-size: 1.1rem;
             line-height: 1.6;
         }
+
+        /* --- CSS ADICIONADO PARA O BOTÃO DE PERFIL --- */
+        .btn-editar-perfil {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ffffff;
+            background-color: var(--cor-primaria, #007bff); /* Usa sua cor primária */
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .btn-editar-perfil:hover {
+            background-color: #0056b3; /* Um tom mais escuro */
+        }
     </style>
 </head>
 
@@ -59,6 +79,7 @@
                 
                 <li><a href="prontuarios.html">📋 Meus Pacientes</a></li>
                 <li><a href="agenda.html">📅 Agenda</a></li>
+                <li><a href="profissionais.html">🔍 Ver Perfis Públicos</a></li>
             </ul>
             
             <button id="logoutBtn">Sair da Conta</button>
@@ -68,17 +89,52 @@
         <div class="container3">
             <h1>Página do Profissional</h1>
 
-<div class="dashboard-box">
-                <h2>Olá! Seja muito bem-vindo(a) à sua área profissional.</h2>
+            <div class="dashboard-box">
+                <h2 id="welcome-message-pro">Olá! Seja muito bem-vindo(a) à sua área profissional.</h2>
                 <p>Criamos este espaço para que você possa gerenciar facilmente os dados que aparecem em seu perfil. As informações que você preencher aqui são fundamentais, pois elas serão vistas por nossos usuários que estão ativamente à procura de apoio e ajuda. Sinta-se à vontade para atualizar seu perfil sempre que necessário.</p>
-            </div>
+                
+                <a href="perfil-profissional.html" class="btn-editar-perfil">
+                    Completar / Editar Meu Perfil
+                </a>
+                </div>
             
-            </div> </div> <script>
-        // Script de logout (mantido)
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. Pega os dados do usuário
+            const userDataString = sessionStorage.getItem('userData');
+            
+            // 2. VERIFICAÇÃO DE SEGURANÇA
+            if (!userDataString) {
+                alert('Você não está logado.');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            const user = JSON.parse(userDataString);
+
+            if (user.tipo !== 'profissional') {
+                alert('Acesso negado. Esta área é apenas para profissionais.');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // 3. Personaliza a página
+            const welcomeEl = document.getElementById('welcome-message-pro');
+            if (welcomeEl && user.username) {
+                // user.username aqui é o 'nome_completo' (definido no login)
+                welcomeEl.textContent = `Olá, ${user.username}! Seja bem-vindo(a) à sua área.`;
+            }
+        });
+
+        // 4. Lógica de Logout (Corrigida)
         const logoutBtn = document.getElementById("logoutBtn");
         if (logoutBtn) {
             logoutBtn.addEventListener("click", () => {
-                sessionStorage.removeItem("currentUser");
+                sessionStorage.removeItem("userData"); // <-- USA A CHAVE CORRETA
                 alert("Você saiu da conta.");
                 window.location.href = "index.html";
             });

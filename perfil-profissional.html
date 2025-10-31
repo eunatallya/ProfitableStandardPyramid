@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindFlow - Completar Perfil</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        :root {
+            --cor-primaria: #007bff;
+            --cor-fundo: #f4f7f6;
+            --cor-cartao: #ffffff;
+            --cor-texto: #333;
+            --cor-label: #555;
+            --sombra-cartao: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--cor-fundo);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container {
+            background-color: var(--cor-cartao);
+            border-radius: 12px;
+            box-shadow: var(--sombra-cartao);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 700px;
+        }
+        h1 {
+            color: var(--cor-primaria);
+            margin-top: 0;
+            text-align: center;
+        }
+        .form-campo { margin-bottom: 1.5rem; }
+        .form-campo label {
+            display: block;
+            font-weight: 500;
+            color: var(--cor-label);
+            margin-bottom: 0.5rem;
+        }
+        .form-campo input,
+        .form-campo select,
+        .form-campo textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            box-sizing: border-box; /* Importante para o padding não quebrar */
+        }
+        .form-campo textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        button[type="submit"] {
+            width: 100%; padding: 1rem; font-size: 1.1rem; font-weight: 600;
+            color: #fff; background-color: var(--cor-primaria);
+            border: none; border-radius: 8px; cursor: pointer;
+        }
+        button[type="submit"]:disabled {
+            background-color: #a0a0a0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Complete seu Perfil Profissional</h1>
+        <form id="perfilForm">
+            <div class="form-campo">
+                <label for="nome_completo">Nome Completo</label>
+                <input type="text" id="nome_completo" required>
+            </div>
+            <div class="form-campo">
+                <label for="idade">Idade</label>
+                <input type="number" id="idade" min="18">
+            </div>
+            <div class="form-campo">
+                <label for="sexo">Sexo</label>
+                <select id="sexo">
+                    <option value="">Prefiro não informar</option>
+                    <option value="Feminino">Feminino</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Outro">Outro</option>
+                </select>
+            </div>
+            <div class="form-campo">
+                <label for="area_atuacao">Área de Atuação</label>
+                <select id="area_atuacao" required>
+                    <option value="">Selecione...</option>
+                    <option value="Psicólogo(a)">Psicólogo(a)</option>
+                    <option value="Psiquiatra">Psiquiatra</option>
+                    <option value="Terapeuta">Terapeuta</option>
+                </select>
+            </div>
+            <div class="form-campo">
+                <label for="contato">Contato (Email ou Telefone)</label>
+                <input type="text" id="contato" required>
+            </div>
+            <div class="form-campo">
+                <label for="sobre_mim">Sobre mim (bio)</label>
+                <textarea id="sobre_mim" placeholder="Fale um pouco sobre sua abordagem, experiência..."></textarea>
+            </div>
+            <button type="submit" id="btnSalvar">Salvar Perfil</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Verifica se o profissional está logado
+            const userDataString = sessionStorage.getItem('userData');
+            if (!userDataString || JSON.parse(userDataString).tipo !== 'profissional') {
+                alert('Acesso negado. Faça login como profissional.');
+                window.location.href = '/index.html';
+                return;
+            }
+
+            const user = JSON.parse(userDataString);
+            
+            // Tenta pré-preencher o nome completo (do registro)
+            if (user.username) {
+                document.getElementById('nome_completo').value = user.username;
+            }
+        });
+
+        document.getElementById('perfilForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const botao = document.getElementById('btnSalvar');
+            botao.disabled = true;
+            botao.textContent = 'Salvando...';
+
+            // Pega o ID do usuário logado
+            const user = JSON.parse(sessionStorage.getItem('userData'));
+            
+            // Pega todos os dados do formulário
+            const dadosPerfil = {
+                userId: user.id,
+                nome_completo: document.getElementById('nome_completo').value,
+                idade: document.getElementById('idade').value ? parseInt(document.getElementById('idade').value) : null,
+                sexo: document.getElementById('sexo').value,
+                area_atuacao: document.getElementById('area_atuacao').value,
+                contato: document.getElementById('contato').value,
+                sobre_mim: document.getElementById('sobre_mim').value
+            };
+
+            try {
+                const response = await fetch('/api/perfil-profissional', {
+                    method: 'PUT', // PUT é o padrão para ATUALIZAR dados
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dadosPerfil)
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.error);
+                }
+
+                alert('Perfil salvo com sucesso!');
+                // (Opcional) Redireciona para a página principal do profissional
+                // window.location.href = '/paginaProfissional.html';
+
+            } catch (err) {
+                alert('Erro ao salvar perfil: ' + err.message);
+            } finally {
+                botao.disabled = false;
+                botao.textContent = 'Salvar Perfil';
+            }
+        });
+    </script>
+</body>
+</html>

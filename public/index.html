@@ -4,23 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login e Registro</title>
-  <link rel="stylesheet" href="login.css" />
-</head>
+  <link rel="stylesheet" href="login.css" /> </head>
 <body>
   <div class="container">
     <button id="backButton">← Voltar</button>
 
-    <!-- LOGIN -->
     <div class="form-box" id="loginBox">
       <h2>Login</h2>
-      <input type="text" id="loginUsuario" placeholder="Usuário" />
+      <input type="text" id="loginPrincipal" placeholder="Usuário ou Email" />
       <input type="password" id="loginSenha" placeholder="Senha" />
       <button class="main-btn" id="loginBtn">Entrar</button>
       <p>Não tem conta? <span id="goRegister">Registrar</span></p>
       <div id="loginError" class="error hidden"></div>
     </div>
 
-    <!-- REGISTRO -->
     <div class="form-box hidden" id="registerBox">
       <h2>Registro</h2>
       <div class="form-container">
@@ -31,20 +28,18 @@
           <option value="profissional">Profissional</option>
         </select>
 
-        <!-- Campos Paciente -->
         <div id="camposPaciente" class="hidden">
           <input type="text" id="regUsuario" placeholder="Nome de usuário" />
-          <input type="password" id="regSenha" placeholder="Senha" />
           <input type="email" id="regEmail" placeholder="Email" />
+          <input type="password" id="regSenha" placeholder="Senha" />
         </div>
 
-        <!-- Campos Profissional -->
         <div id="camposProfissional" class="hidden">
           <input type="text" id="nomeProf" placeholder="Nome" />
           <input type="text" id="sobrenomeProf" placeholder="Sobrenome" />
-          <input type="password" id="regSenha" placeholder="Senha" />
           <input type="text" id="crmProf" placeholder="CRM (ex: 123456/SP)" />
           <input type="email" id="emailProf" placeholder="Email" />
+          <input type="password" id="senhaProf" placeholder="Senha" /> 
         </div>
 
         <div id="registroError" class="error hidden"></div>
@@ -55,109 +50,136 @@
   </div>
 
   <script>
-  const loginBox = document.getElementById("loginBox");
-  const registerBox = document.getElementById("registerBox");
-  const goRegister = document.getElementById("goRegister");
-  const goLogin = document.getElementById("goLogin");
-  const backButton = document.getElementById("backButton");
+    // --- NAVEGAÇÃO ENTRE TELAS ---
+    const loginBox = document.getElementById("loginBox");
+    const registerBox = document.getElementById("registerBox");
+    const goRegister = document.getElementById("goRegister");
+    const goLogin = document.getElementById("goLogin");
+    const backButton = document.getElementById("backButton");
 
-  // Alternar telas
-  goRegister.addEventListener("click", () => {
-    loginBox.classList.add("hidden");
-    registerBox.classList.remove("hidden");
-  });
+    goRegister.addEventListener("click", () => {
+      loginBox.classList.add("hidden");
+      registerBox.classList.remove("hidden");
+    });
+    goLogin.addEventListener("click", () => {
+      registerBox.classList.add("hidden");
+      loginBox.classList.remove("hidden");
+    });
+    backButton.addEventListener("click", () => {
+      registerBox.classList.add("hidden");
+      loginBox.classList.remove("hidden");
+    });
 
-  goLogin.addEventListener("click", () => {
-    registerBox.classList.add("hidden");
-    loginBox.classList.remove("hidden");
-  });
-
-  backButton.addEventListener("click", () => {
-    registerBox.classList.add("hidden");
-    loginBox.classList.remove("hidden");
-  });
-
-  // Mostrar campos de registro
-  function mostrarCamposRegistro() {
-    const tipo = document.getElementById("tipo").value;
-    const camposPaciente = document.getElementById("camposPaciente");
-    const camposProfissional = document.getElementById("camposProfissional");
-
-    camposPaciente.classList.add("hidden");
-    camposProfissional.classList.add("hidden");
-
-    if (tipo === "paciente") camposPaciente.classList.remove("hidden");
-    else if (tipo === "profissional") camposProfissional.classList.remove("hidden");
-  }
-
-  // Registrar usuário no localStorage
-  const btnRegistrar = document.getElementById("btnRegistrar");
-  const registroError = document.getElementById("registroError");
-
-  btnRegistrar.addEventListener("click", () => {
-    const tipo = document.getElementById("tipo").value;
-    let username, password, email;
-
-    if (tipo === "paciente") {
-      username = document.getElementById("regUsuario").value;
-      password = document.getElementById("regSenha").value;
-      email = document.getElementById("regEmail").value;
-    } else if (tipo === "profissional") {
-      username = document.getElementById("nomeProf").value;
-      password = document.getElementById("crmProf").value;
-      email = document.getElementById("emailProf").value;
-    } else {
-      registroError.textContent = "Selecione um tipo válido!";
-      registroError.classList.remove("hidden");
-      return;
+    function mostrarCamposRegistro() {
+      const tipo = document.getElementById("tipo").value;
+      const camposPaciente = document.getElementById("camposPaciente");
+      const camposProfissional = document.getElementById("camposProfissional");
+      camposPaciente.classList.add("hidden");
+      camposProfissional.classList.add("hidden");
+      if (tipo === "paciente") camposPaciente.classList.remove("hidden");
+      else if (tipo === "profissional") camposProfissional.classList.remove("hidden");
     }
 
-    if (!username || !password || !email) {
-      registroError.textContent = "Preencha todos os campos!";
-      registroError.classList.remove("hidden");
-      return;
-    }
+    // --- LÓGICA DE LOGIN (CONECTADA AO BACKEND) ---
+    const loginBtn = document.getElementById("loginBtn");
+    const loginError = document.getElementById("loginError");
 
-    let users = JSON.parse(localStorage.getItem("users")) || [];
-    if (users.find(u => u.username === username)) {
-      registroError.textContent = "Usuário já existe!";
-      registroError.classList.remove("hidden");
-      return;
-    }
+    loginBtn.addEventListener("click", async () => {
+      const login = document.getElementById("loginPrincipal").value; // Campo de login
+      const password = document.getElementById("loginSenha").value;
 
-    users.push({ username, password, email, tipo });
-    localStorage.setItem("users", JSON.stringify(users));
-    registroError.classList.add("hidden");
-    alert("Registrado com sucesso!");
-    registerBox.classList.add("hidden");
-    loginBox.classList.remove("hidden");
-  });
+      try {
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ login, password }) // Envia 'login' e 'password'
+        });
 
-  // Login com identificação de tipo
-  const loginBtn = document.getElementById("loginBtn");
-  const loginError = document.getElementById("loginError");
+        const data = await response.json(); 
+        if (!response.ok) {
+          loginError.textContent = data.error;
+          loginError.classList.remove("hidden");
+        } else {
+          loginError.classList.add("hidden");
+          sessionStorage.setItem('userData', JSON.stringify(data)); // Salva o usuário
 
-  loginBtn.addEventListener("click", () => {
-    const username = document.getElementById("loginUsuario").value;
-    const password = document.getElementById("loginSenha").value;
-
-    let users = JSON.parse(localStorage.getItem("users")) || [];
-    const user = users.find(u => u.username === username && u.password === password);
-
-    if (user) {
-      loginError.classList.add("hidden");
-
-      // Redireciona conforme o tipo
-      if (user.tipo === "paciente") {
-        alert(`Bem-vindo(a) paciente ${user.username}!`);
-        window.location.href = "paginaPaciente.html"; // já existe
-      } else if (user.tipo === "profissional") {
-        alert(`Bem-vindo(a) profissional ${user.username}!`);
-        window.location.href = "profissional.html"; // crie essa página se ainda não existir
+          // Lógica de Redirecionamento
+          if (data.tipo === 'paciente') {
+            if (data.pre_diagnostico === null) {
+              alert(`Bem-vindo(a) ${data.username}! Responda umas perguntas rápidas.`);
+              window.location.href = '/questionario.html';
+            } else {
+              window.location.href = '/paginaPaciente.html'; // Mude se o nome for outro
+            }
+          } else if (data.tipo === 'profissional') {
+            alert(`Bem-vindo(a) ${data.username}!`);
+            window.location.href = "/profissional.html";
+          }
+        }
+      } catch (err) {
+        loginError.textContent = "Erro de conexão com o servidor.";
+        loginError.classList.remove("hidden");
       }
-    } else {
-      loginError.textContent = "Usuário ou senha incorretos!";
-      loginError.classList.remove("hidden");
-    }
-  });
-</script>
+    });
+
+    // --- LÓGICA DE REGISTRO (CONECTADA AO BACKEND) ---
+    const btnRegistrar = document.getElementById("btnRegistrar");
+    const registroError = document.getElementById("registroError");
+
+    btnRegistrar.addEventListener("click", async () => {
+      const tipo = document.getElementById("tipo").value;
+      let bodyData = { tipo: tipo };
+      registroError.classList.add("hidden");
+
+      if (tipo === "paciente") {
+        bodyData.username = document.getElementById("regUsuario").value;
+        bodyData.password = document.getElementById("regSenha").value;
+        bodyData.email = document.getElementById("regEmail").value;
+
+        if (!bodyData.username || !bodyData.password || !bodyData.email) {
+          registroError.textContent = "Preencha todos os campos!";
+          registroError.classList.remove("hidden");
+          return;
+        }
+      } else if (tipo === "profissional") {
+        bodyData.nome_completo = document.getElementById("nomeProf").value + " " + document.getElementById("sobrenomeProf").value;
+        bodyData.crm = document.getElementById("crmProf").value;
+        bodyData.email = document.getElementById("emailProf").value;
+        bodyData.password = document.getElementById("senhaProf").value;
+
+        if (!bodyData.nome_completo || !bodyData.crm || !bodyData.email || !bodyData.password) {
+          registroError.textContent = "Preencha todos os campos!";
+          registroError.classList.remove("hidden");
+          return;
+        }
+      } else {
+        registroError.textContent = "Selecione um tipo válido!";
+        registroError.classList.remove("hidden");
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(bodyData)
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          registroError.textContent = data.error; 
+          registroError.classList.remove("hidden");
+        } else {
+          alert("Registrado com sucesso! Por favor, faça o login.");
+          registerBox.classList.add("hidden");
+          loginBox.classList.remove("hidden");
+        }
+      } catch (err) {
+        registroError.textContent = "Erro de conexão com o servidor.";
+        registroError.classList.remove("hidden");
+      }
+    });
+  </script>
+</body>
+</html>
+ 

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindFlow - Nossos Profissionais</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        :root { /* ... (suas variáveis de cor) ... */ }
+        body { font-family: 'Inter', sans-serif; background-color: #f4f7f6; }
+        .layout { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+        h1 { color: #007bff; }
+        
+        .card-profissional {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+        .card-header h3 {
+            margin: 0;
+            color: #007bff;
+            font-size: 1.5rem;
+        }
+        .card-header span {
+            font-weight: 500;
+            color: #555;
+            font-size: 1.1rem;
+        }
+        .card-body p {
+            color: #333;
+            line-height: 1.6;
+            white-space: pre-wrap; /* Preserva quebras de linha no "Sobre mim" */
+        }
+        .card-body strong {
+            color: #555;
+        }
+        .card-contato {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <main class="conteudo">
+            <h1>Nossos Profissionais</h1>
+            <p>Conheça a equipe de especialistas da plataforma MindFlow.</p>
+            
+            <div id="lista-profissionais">
+                <p>Buscando profissionais...</p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const listaContainer = document.getElementById('lista-profissionais');
+            try {
+                // 1. Chama a rota /api/profissionais (que agora tem mais dados)
+                const response = await fetch('/api/profissionais');
+                const profissionais = await response.json();
+
+                listaContainer.innerHTML = '';
+                if (profissionais.length === 0) {
+                    listaContainer.innerHTML = '<p>Nenhum profissional cadastrado no momento.</p>';
+                    return;
+                }
+
+                // 2. Cria os cards com as NOVAS informações
+                profissionais.forEach(prof => {
+                    // Ignora perfis incompletos
+                    if (!prof.area_atuacao) return; 
+
+                    const card = document.createElement('div');
+                    card.className = 'card-profissional';
+
+                    // 3. Monta o HTML do card completo
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <div>
+                                <h3>${prof.nome_completo || 'Nome não informado'}</h3>
+                                <span>${prof.area_atuacao}</span>
+                            </div>
+                            <span>${prof.sexo || ''} ${prof.idade ? `, ${prof.idade} anos` : ''}</span>
+                        </div>
+                        <div class="card-body">
+                            <p>${prof.sobre_mim || 'O profissional não adicionou uma biografia.'}</p>
+                        </div>
+                        <div class="card-contato">
+                            <p><strong>Contato:</strong> ${prof.contato || 'Não informado'}</p>
+                            <p><strong>Registro:</strong> ${prof.crm}</p>
+                        </div>
+                    `;
+                    
+                    listaContainer.appendChild(card);
+                });
+
+            } catch (err) {
+                console.error(err);
+                listaContainer.innerHTML = '<p>Houve um erro ao carregar os profissionais.</p>';
+            }
+        });
+    </script>
+
+</body>
+</html>
